@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html" />
+	<title>Guess</title>
+    
+    <style>
+    body{
+        font-size: 120%;
+    }
+    #main{
+        width:500px; 
+        height:300px; 
+        margin: 100px auto; 
+        border:1px solid green;
+        background-color: /*greenyellow*/ #F0F0F0;
+    }
+    
+  /**/   #reset{
+        display: none;
+    }
+   
+    #makeSolution, #reset{
+       cursor: pointer;
+       width: 100px;
+      /* height: 30px;*/
+       border-radius: 20px;
+       margin: -3px 5px 5px 5px;
+       font-size: 14pt;
+       padding: 3px 0;
+       
+    }
+    
+    #main label{
+        font-weight: bold;
+    }
+    
+    #content{
+        margin: 20px 50px;
+    }
+    #labelForHotNumbers{
+        display: none;
+        margin: 10px 0;
+    }
+    
+    #data{
+        font-size: 17pt;
+    }
+    
+    </style>
+</head>
+
+<body>
+<div id='main' style="">
+  <center><label style="font-size: 18pt;">Input number from 0 to 100. You have <span id='numOfAttempts'>10</span> trys for guess right number</label> </center>
+ <div id="content">
+   <input type="text" id='data' style="width:100px;"/>
+   <button id='makeSolution' onclick="makeSolution()">Go</button>
+   <button id='reset' onclick="reset()">Reset</button>
+   <br />
+   <div id="response"></div>
+   <p id="labelForHotNumbers">Hot numbers: <span id="hotNumbers"></span></p>
+ </div>
+  
+</div>
+
+
+</body>
+<script>
+
+var autoData = Math.round(Math.random()*100);
+console.log(autoData);
+var mediumBefore = autoData/2;
+var mediumAfter = (100-autoData)/2 + autoData;
+var step = 10;   
+
+var a = document.getElementById('makeSolution');
+
+function makeSolution(){
+   var userData = document.getElementById('data').value;
+   if(userData){
+    if (step>1){
+        step--;
+        document.getElementById('numOfAttempts').textContent = step;
+        calculate(userData);
+   }else{
+    alert('Вы исчерпали попытки');
+   }
+   } else{
+    document.getElementById('response').textContent = 'Вы не ввели число';
+   }
+   
+};
+function view(data){
+    document.getElementById('numOfAttempts').textContent = data;
+    document.getElementById('makeSolution').style.display = 'none';
+    document.getElementById('reset').style.display = 'inline';
+}
+
+function calculate(data){    
+    if(data == autoData){
+        document.getElementById('main').style.backgroundColor = '#3EBE3E';
+        document.getElementById('response').textContent = 'Congrate!!! You guess!!!';
+        step = 0;
+        view(step);        
+    }else{
+        if((data == mediumBefore) || (data == mediumAfter)){
+          document.getElementById('main').style.backgroundColor = 'yellow';
+          document.getElementById('response').textContent = 'Center!!! Try again!!!';
+        }else{
+              if((data > mediumAfter) || (data < mediumBefore)){
+                document.getElementById('main').style.backgroundColor = 'blue';
+                document.getElementById('main').style.color = 'white';
+                document.getElementById('response').textContent = 'Cold!!! Try again!!!';
+              } else{
+                if((data < mediumAfter) && (data > mediumBefore)){
+                  document.getElementById('main').style.backgroundColor = 'red';
+                  document.getElementById('response').textContent = 'Hot!!! But try again!!!';
+                  document.getElementById('labelForHotNumbers').style.display = 'block';
+                  document.getElementById('hotNumbers').textContent = document.getElementById('hotNumbers').textContent + data+' ';
+                  if((data < mediumAfter) && (data > autoData)){
+                    mediumAfter = data;
+                  }else{
+                    mediumBefore = data;
+                  } 
+                } 
+              }              
+            }
+        }
+    }
+
+
+function reset(){
+    document.getElementById('data').value = '';
+    autoData = Math.round(Math.random()*100);
+    console.log(autoData);
+    mediumBefore = autoData/2;
+    mediumAfter = (100-autoData)/2 + autoData;
+    step = 10;  
+    document.getElementById('main').style.backgroundColor = 'greenyellow';
+    document.getElementById('response').textContent = '';
+    document.getElementById('labelForHotNumbers').style.display = 'none';
+    document.getElementById('reset').style.display = 'none';
+    document.getElementById('makeSolution').style.display = 'inline';
+}
+
+
+</script>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html" />
+	<title>Distance between arrows</title>
+</head>
+
+<body>
+<div id="mainBlock" style="width:500px; height:300px; margin: 100px auto; border:1px solid green">
+  <label>Введите время</label>
+  <br />  <br />
+  <input id='hour' size="5" /> <label>Часы</label><br />
+  <input id='minuts' size="5"/><label>Минуты</label><br />
+
+  <p>Расстояние между стрелками равно <span id='result' style="color: red;"></span> градусов</p>
+  <button id='makeSolution' onclick="model()">Расчитать</button>
+  <button id='reset'  onclick="reset()">Сброс</button>
+</div>
+
+<script>
+function testing(){
+    var testData = [{h:3,m:00},{h:6,m:00},{h:9,m:00},{h:24,m:00},{h:18,m:00},{h:21,m:00},{h:3,m:10},{h:3,m:20},{h:4,m:40},{h:7,m:45},{h:20,m:55},{h:19,m:05}];
+    var testResult =[90,        180,       90,        0,         180,          90,          35,     20,        100,        37.5,       62.5,       177.5];
+    for (var i = 0; i < testData.length; i++){
+        var response = makeCalc(testData[i].h,testData[i].m);
+        if(response == testResult[i]){
+        console.log(testData[i].h,':',testData[i].m,'succsess');
+        }else{
+            console.log(testData[i].h,':',testData[i].m,'failed');
+        }
+    }    
+};
+
+function model(){
+     var objTime = getHM();
+     if( (objTime.h != null) && (objTime.m != null) ){
+        var gradus = makeCalc(objTime.h, objTime.m);
+     view(gradus);
+     }  
+}
+
+function makeCalc(h,m){
+    var result;
+    h = check(h);
+    var hourInGadus = (h*30)+(m*0.5);    
+	var minutsInGradus = m*6;    
+    if (hourInGadus > minutsInGradus){
+        result = (hourInGadus-minutsInGradus);
+    }else{
+        result = (minutsInGradus-hourInGadus);
+    }
+    if (result > 180) {
+        result = 360 - result;
+    }
+    return result;
+}
+
+function view(data){
+    document.getElementById('result').textContent = data;  
+}
+
+function check(h){
+    var hour;  
+      if ((h>24) || (h<0)){
+        alert('Not correct hour');
+      }else{
+        if(h>12){
+             hour = h-12;
+        }else{
+            hour = h; 
+        }      
+      }
+    return hour;
+}
+
+function getHM(){
+    var objTime = {
+        h:null,
+        m:null
+    };
+    var a = document.getElementById('hour').value;
+    var b = document.getElementById('minuts').value;
+      if (isNumeric(a) && isNumeric(b)){
+        objTime.h = parseInt(document.getElementById('hour').value);
+        objTime.m = parseInt(document.getElementById('minuts').value);
+    }else{
+        alert('Wrong time!!! The time should be only a number');        
+    }      
+    return objTime; 
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function reset(){
+    document.getElementById('hour').value = '';
+    document.getElementById('minuts').value = '';
+    view('');
+    objTime.h = null;
+    objTime.m = null;
+};
+
+
+</script>
+</body>
+</html>
